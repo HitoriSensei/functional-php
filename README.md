@@ -239,7 +239,7 @@ $flattened = F\flatten(array(1, 2, 3, array(1, 2, 3, 4), 5));
 ### Functional\first_index_of()
 Returns the first index holding specified value in the collection. Returns false if value was not found
 
-``array Functional\first_index_of(array|Traversable $collection, mixed $value)``
+``int|string Functional\first_index_of(array|Traversable $collection, mixed $value)``
 
 ```php
 <?php
@@ -252,7 +252,7 @@ $index = F\first_index_of(array('value', 'value'), 'value');
 ### Functional\last_index_of()
 Returns the last index holding specified value in the collection. Returns false if value was not found
 
-``array Functional\last_index_of(array|Traversable $collection, mixed $value)``
+``int|string Functional\last_index_of(array|Traversable $collection, mixed $value)``
 
 ```php
 <?php
