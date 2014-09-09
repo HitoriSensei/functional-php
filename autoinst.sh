@@ -5,7 +5,7 @@ sudo make install
 echo 
 sudo php5enmod functional
 if [ $? -ne 0 ]; then
-	cp functional.ini /etc/php5/mods-available/functional.ini
+	sudo cp functional.ini /etc/php5/mods-available/functional.ini
 	sudo php5enmod functional
 	if [ $? -ne 0 ]; then
 		echo "Cannot activate functional module. Please activate it manually."
