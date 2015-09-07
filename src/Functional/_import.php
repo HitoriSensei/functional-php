@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2011-2013 by Lars Strojny <lstrojny@php.net>
+ * Copyright (C) 2011-2015 by Lars Strojny <lstrojny@php.net>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,8 +22,10 @@
  */
 
 call_user_func(function() {
-    static $symbols = array(
+    static $symbols = [
         'Functional\\Exceptions\\InvalidArgumentException',
+        'Functional\\Sequences\\LinearSequence',
+        'Functional\\Sequences\\ExponentialSequence',
         'Functional\\every',
         'Functional\\some',
         'Functional\\difference',
@@ -32,6 +34,7 @@ call_user_func(function() {
         'Functional\\each',
         'Functional\\first',
         'Functional\\filter',
+        'Functional\\flat_map',
         'Functional\\flatten',
         'Functional\\group',
         'Functional\\invoke',
@@ -58,6 +61,7 @@ call_user_func(function() {
         'Functional\\average',
         'Functional\\first_index_of',
         'Functional\\last_index_of',
+        'Functional\\indexes_of',
         'Functional\\true',
         'Functional\\false',
         'Functional\\truthy',
@@ -67,7 +71,17 @@ call_user_func(function() {
         'Functional\\head',
         'Functional\\tail',
         'Functional\\with',
-    );
+        'Functional\\sort',
+        'Functional\\retry',
+        'Functional\\poll',
+        'Functional\\sequence_constant',
+        'Functional\\sequence_linear',
+        'Functional\\sequence_exponential',
+        'Functional\\partial_left',
+        'Functional\\partial_right',
+        'Functional\\partial_any',
+        'Functional\\partial_method',
+    ];
     static $basePath = __DIR__;
 
     foreach ($symbols as $symbol) {
@@ -84,10 +98,6 @@ call_user_func(function() {
                 implode('', array_map('ucfirst', explode('_', substr($symbol, 11))))
             ) . '.php';
 
-        if (!file_exists($path)) {
-            trigger_error(sprintf('Could not load symbol "%s" in file "%s"', $symbol, $path));
-        }
-
-        include $path;
+        require $path;
     }
 });

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2011-2013 by Lars Strojny <lstrojny@php.net>
+ * Copyright (C) 2011-2015 by Lars Strojny <lstrojny@php.net>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,13 +28,11 @@ use Traversable;
 /**
  * Recombines arrays by index and applies a callback optionally
  *
- * @param Traversable|array $collection One or more callbacks
+ * @param $args array|Traversable $collection One or more callbacks
  * @return array
  */
-function zip($collection)
+function zip(...$args)
 {
-    $args = func_get_args();
-
     $callback = null;
     if (is_callable(end($args))) {
         $callback = array_pop($args);
@@ -44,16 +42,17 @@ function zip($collection)
         InvalidArgumentException::assertCollection($arg, __FUNCTION__, $position + 1);
     }
 
-    $result = array();
-    foreach ($collection as $index => $value) {
-        $zipped = array();
+    $result = [];
+    foreach ((array) reset($args) as $index => $value) {
+        $zipped = [];
 
         foreach ($args as $arg) {
             $zipped[] = isset($arg[$index]) ? $arg[$index] : null;
         }
 
         if ($callback !== null) {
-            $zipped = call_user_func_array($callback, $zipped);
+            /** @var callable $callback */
+            $zipped = $callback(...$zipped);
         }
 
         $result[] = $zipped;

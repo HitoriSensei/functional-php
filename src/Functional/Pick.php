@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2011-2013 by Lars Strojny <lstrojny@php.net>
+ * Copyright (C) 2011-2015 by Lars Strojny <lstrojny@php.net>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,20 +35,16 @@ use Functional\Exceptions\InvalidArgumentException;
  * @param callable $callback Custom function to check if index exists, default function is "isset"
  * @return mixed
  */
-function pick($collection, $index, $default = null, $callback = null)
+function pick($collection, $index, $default = null, callable $callback = null)
 {
     InvalidArgumentException::assertArrayAccess($collection, __FUNCTION__, 1);
-
-    if ($callback !== null) {
-        InvalidArgumentException::assertCallback($callback, __FUNCTION__, 2);
-    }
 
     if ($callback === null) {
         if (!isset($collection[$index])) {
             return $default;
         }
     } else {
-        if (!call_user_func($callback, $collection, $index)) {
+        if (!$callback($collection, $index)) {
             return $default;
         }
     }

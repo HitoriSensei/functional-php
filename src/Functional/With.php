@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2011-2013 by Lars Strojny <lstrojny@php.net>
+ * Copyright (C) 2011-2015 by Lars Strojny <lstrojny@php.net>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ use Functional\Exceptions\InvalidArgumentException;
  * @param callable $callback
  * @return mixed
  */
-function with($value, $callback)
+function with($value, callable $callback)
 {
     InvalidArgumentException::assertCallback($callback, __FUNCTION__, 2);
 

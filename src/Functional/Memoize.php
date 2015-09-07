@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2011-2013 by Lars Strojny <lstrojny@php.net>
+ * Copyright (C) 2011-2015 by Lars Strojny <lstrojny@php.net>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,22 +27,27 @@ use Functional\Exceptions\InvalidArgumentException;
 /**
  * Memoizes callbacks and returns their value instead of calling them
  *
- * @param callable $callback Callable closure or function
+ * @param callable|null $callback Callable closure or function. Pass null to reset memory
  * @param array $arguments Arguments
  * @param array|string $key Optional memoize key to override the auto calculated hash
  * @return mixed
  */
-function memoize($callback, array $arguments = array(), $key = null)
+function memoize(callable $callback = null, $arguments = [], $key = null)
 {
-    static $storage = array();
+    static $storage = [];
 
     if ($callback === null) {
-        $storage = array();
+        $storage = [];
 
         return null;
     }
 
-    InvalidArgumentException::assertCallback($callback, __FUNCTION__, 1);
+    if (is_callable($arguments)) {
+        $key = $arguments;
+        $arguments = [];
+    } else {
+        InvalidArgumentException::assertCollection($arguments, __FUNCTION__, 2);
+    }
 
     static $keyGenerator = null;
     if (!$keyGenerator) {
@@ -61,13 +66,15 @@ function memoize($callback, array $arguments = array(), $key = null)
     }
 
     if ($key === null) {
-        $key = $keyGenerator(array_merge(array($callback), $arguments));
+        $key = $keyGenerator(array_merge([$callback], $arguments));
+    } elseif (is_callable($key)) {
+        $key = $keyGenerator($key());
     } else {
         $key = $keyGenerator($key);
     }
 
     if (!isset($storage[$key]) && !array_key_exists($key, $storage)) {
-        $storage[$key] = call_user_func_array($callback, $arguments);
+        $storage[$key] = $callback(...$arguments);
     }
 
     return $storage[$key];

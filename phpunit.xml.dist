@@ -1,5 +1,5 @@
 <!--
- * Copyright (C) 2011-2013 by Lars Strojny <lstrojny@php.net>
+ * Copyright (C) 2011-2015 by Lars Strojny <lstrojny@php.net>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,10 +22,12 @@
 <phpunit
     backupGlobals="false"
     backupStaticAttributes="false"
-    bootstrap="tests/unit/Functional/_bootstrap.php"
+    bootstrap="vendor/autoload.php"
     convertWarningsToExceptions="true"
     convertNoticesToExceptions="true"
-    strict="true"
+    beStrictAboutTestsThatDoNotTestAnything="true"
+    beStrictAboutOutputDuringTests="true"
+    beStrictAboutTestSize="true"
     verbose="true"
     colors="true">
     <filter>
@@ -41,7 +43,7 @@
 
     <testsuites>
         <testsuite name="unit-tests">
-            <directory>tests/unit</directory>
+            <directory>tests/Functional/</directory>
         </testsuite>
     </testsuites>
 
@@ -55,6 +57,7 @@
 
     <php>
         <ini name="error_reporting" value="-1"/>
+        <ini name="date.timezone" value="UTC"/>
     </php>
 
 </phpunit>

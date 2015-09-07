@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2011-2013 by Lars Strojny <lstrojny@php.net>
+ * Copyright (C) 2011-2015 by Lars Strojny <lstrojny@php.net>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,9 +38,17 @@ function last_index_of($collection, $value)
 
     $matchingIndex = false;
 
-    foreach ($collection as $index => $element) {
-        if ($element === $value) {
-            $matchingIndex = $index;
+    if (is_callable($value)) {
+        foreach ($collection as $index => $element) {
+            if ($element === $value($element, $index, $collection)) {
+                $matchingIndex = $index;
+            }
+        }
+    } else {
+        foreach ($collection as $index => $element) {
+            if ($element === $value) {
+                $matchingIndex = $index;
+            }
         }
     }
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2011-2013 by Lars Strojny <lstrojny@php.net>
+ * Copyright (C) 2011-2015 by Lars Strojny <lstrojny@php.net>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,11 +24,17 @@ namespace Functional\Exceptions;
 
 class InvalidArgumentException extends \InvalidArgumentException
 {
+    /**
+     * @param callable $callback
+     * @param string $callee
+     * @param integer $parameterPosition
+     * @throws InvalidArgumentException
+     */
     public static function assertCallback($callback, $callee, $parameterPosition)
     {
         if (!is_callable($callback)) {
 
-            if (!is_array($callback) and !is_string($callback)) {
+            if (!is_array($callback) && !is_string($callback)) {
                 throw new static(
                     sprintf(
                         '%s() expected parameter %d to be a valid callback, no array, string, closure or functor given',
@@ -56,7 +62,6 @@ class InvalidArgumentException extends \InvalidArgumentException
 
                 default:
                     $type = 'function';
-                    $callback = $callback;
                     break;
             }
 
@@ -75,28 +80,12 @@ class InvalidArgumentException extends \InvalidArgumentException
 
     public static function assertCollection($collection, $callee, $parameterPosition)
     {
-        if (!is_array($collection) and !$collection instanceof \Traversable) {
-            throw new static(
-                sprintf(
-                    '%s() expects parameter %d to be array or instance of Traversable',
-                    $callee,
-                    $parameterPosition
-                )
-            );
-        }
+        self::assertCollectionAlike($collection, 'Traversable', $callee, $parameterPosition);
     }
 
     public static function assertArrayAccess($collection, $callee, $parameterPosition)
     {
-        if (!is_array($collection) && !$collection instanceof \ArrayAccess) {
-            throw new static(
-                sprintf(
-                    '%s() expects parameter %d to be array or instance of ArrayAccess',
-                    $callee,
-                    $parameterPosition
-                )
-            );
-        }
+        self::assertCollectionAlike($collection, 'ArrayAccess', $callee, $parameterPosition);
     }
 
     public static function assertMethodName($methodName, $callee, $parameterPosition)
@@ -113,9 +102,18 @@ class InvalidArgumentException extends \InvalidArgumentException
         }
     }
 
+    /**
+     * @param string $propertyName
+     * @param string $callee
+     * @param integer $parameterPosition
+     * @throws InvalidArgumentException
+     */
     public static function assertPropertyName($propertyName, $callee, $parameterPosition)
     {
-        if (!is_string($propertyName) && !is_integer($propertyName) && !is_float($propertyName) && !is_null($propertyName)) {
+        if (!is_string($propertyName) &&
+            !is_integer($propertyName) &&
+            !is_float($propertyName) &&
+            !is_null($propertyName)) {
             throw new static(
                 sprintf(
                     '%s() expects parameter %d to be a valid property name or array index, %s given',
@@ -145,9 +143,14 @@ class InvalidArgumentException extends \InvalidArgumentException
         }
     }
 
+    /**
+     * @param mixed $key
+     * @param string $callee
+     * @throws static
+     */
     public static function assertValidArrayKey($key, $callee)
     {
-        $keyTypes = array('NULL', 'string', 'integer', 'double', 'boolean');
+        $keyTypes = ['NULL', 'string', 'integer', 'double', 'boolean'];
 
         $keyType = gettype($key);
 
@@ -163,7 +166,7 @@ class InvalidArgumentException extends \InvalidArgumentException
             );
         }
     }
-    
+
     public static function assertArrayKeyExists($collection, $key, $callee)
     {
     	if (!isset($collection[$key])) {
@@ -175,5 +178,115 @@ class InvalidArgumentException extends \InvalidArgumentException
                 )
             );
     	}
+    }
+
+    /**
+     * @param boolean $value
+     * @param string $callee
+     * @param integer $parameterPosition
+     * @throws InvalidArgumentException
+     */
+    public static function assertBoolean($value, $callee, $parameterPosition)
+    {
+        if (!is_bool($value)) {
+            throw new static(
+                sprintf(
+                    '%s() expects parameter %d to be boolean',
+                    $callee,
+                    $parameterPosition
+                )
+            );
+        }
+    }
+
+    /**
+     * @param boolean $value
+     * @param string $callee
+     * @param integer $parameterPosition
+     * @throws InvalidArgumentException
+     */
+    public static function assertInteger($value, $callee, $parameterPosition)
+    {
+        if (!is_integer($value)) {
+            throw new static(
+                sprintf(
+                    '%s() expects parameter %d to be integer',
+                    $callee,
+                    $parameterPosition
+                )
+            );
+        }
+    }
+
+    /**
+     * @param integer $value
+     * @param integer $limit
+     * @param string $callee
+     * @param integer $parameterPosition
+     * @throws InvalidArgumentException
+     */
+    public static function assertIntegerGreaterThanOrEqual($value, $limit, $callee, $parameterPosition)
+    {
+        if (!is_integer($value) || $value < $limit) {
+            throw new static(
+                sprintf(
+                    '%s() expects parameter %d to be an integer greater than or equal to %d',
+                    $callee,
+                    $parameterPosition,
+                    $limit
+                )
+            );
+        }
+    }
+
+    /**
+     * @param integer $value
+     * @param integer $limit
+     * @param string $callee
+     * @param integer $parameterPosition
+     * @throws InvalidArgumentException
+     */
+    public static function assertIntegerLessThanOrEqual($value, $limit, $callee, $parameterPosition)
+    {
+        if (!is_integer($value) || $value > $limit) {
+            throw new static(
+                sprintf(
+                    '%s() expects parameter %d to be an integer less than or equal to %d',
+                    $callee,
+                    $parameterPosition,
+                    $limit
+                )
+            );
+        }
+    }
+
+    public static function assertResolvablePlaceholder(array $args, $position)
+    {
+        if (count($args) === 0) {
+            throw new static(
+                sprintf('Cannot resolve parameter placeholder at position %d. Parameter stack is empty.', $position)
+            );
+        }
+    }
+
+    /**
+     * @param $collection
+     * @param string $className
+     * @param string $callee
+     * @param integer $parameterPosition
+     * @throws InvalidArgumentException
+     */
+    private static function assertCollectionAlike($collection, $className, $callee, $parameterPosition)
+    {
+        if (!is_array($collection) && !$collection instanceof $className) {
+            throw new static(
+                sprintf(
+                    '%s() expects parameter %d to be array or instance of %s',
+                    $callee,
+                    $parameterPosition,
+                    $className
+                )
+            );
+        }
     }
 }

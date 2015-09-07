@@ -1,5 +1,7 @@
 # Functional PHP: Functional primitives for PHP
-[![Build Status](https://secure.travis-ci.org/lstrojny/functional-php.svg)](http://travis-ci.org/lstrojny/functional-php) [![Dependency Status](https://www.versioneye.com/user/projects/523ed780632bac1b1100c359/badge.png)](https://www.versioneye.com/user/projects/523ed780632bac1b1100c359) [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/lstrojny/functional-php.svg)](http://isitmaintained.com/project/lstrojny/functional-php "Average time to resolve an issue") [![Percentage of issues still open](http://isitmaintained.com/badge/open/lstrojny/functional-php.svg)](http://isitmaintained.com/project/lstrojny/functional-php "Percentage of issues still open")
+
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/lstrojny/functional-php?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://secure.travis-ci.org/lstrojny/functional-php.svg)](http://travis-ci.org/lstrojny/functional-php) [![Dependency Status](https://www.versioneye.com/user/projects/523ed780632bac1b1100c359/badge.png)](https://www.versioneye.com/user/projects/523ed780632bac1b1100c359) [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/lstrojny/functional-php.svg)](http://isitmaintained.com/project/lstrojny/functional-php "Average time to resolve an issue") [![Percentage of issues still open](http://isitmaintained.com/badge/open/lstrojny/functional-php.svg)](http://isitmaintained.com/project/lstrojny/functional-php "Percentage of issues still open") [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/lstrojny/functional-php/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/lstrojny/functional-php/?branch=master)
 
 A set of functional primitives for PHP, heavily inspired by [Scala’s traversable
 collection](http://www.scala-lang.org/archives/downloads/distrib/files/nightly/docs/library/scala/collection/Traversable.html),
@@ -10,41 +12,25 @@ collection](http://www.scala-lang.org/archives/downloads/distrib/files/nightly/d
   - Consistent interface: for functions taking collections and callbacks, first parameter is always the collection, than the callback.
 Callbacks are always passed `$value`, `$index`, `$collection`. Strict comparison is the default but can be changed
   - Calls 5.3 closures as well as usual callbacks
-  - C implementation for performance but a compatible userland implementation is provided if you can’t install PHP
-    extensions
   - All functions reside in namespace `Functional` to not raise conflicts with any other extension or library
 
 [![Functional Comic](http://imgs.xkcd.com/comics/functional.png)](http://xkcd.com/1270/)
 
 ## Installation
 
-
-### Install native extension
-```bash
-cd functional-php/
-phphize
-./configure
-make
-sudo make install
-```
-
-
-### Use userland extension
-
-#### Using composer
+### Using composer
 
 Put the require statement for `functional-php` in your `composer.json` file and run `php composer.phar install`:
 
 ```json
 {
     "require": {
-        "lstrojny/functional-php": "*"
+        "lstrojny/functional-php": "~1.2"
     }
 }
 ```
 
-
-#### Manually
+### Manually
 
 Checkout functional-php and include the `_import.php`
 
@@ -53,6 +39,7 @@ Checkout functional-php and include the `_import.php`
 include 'path/to/functional-php/src/Functional/_import.php';
 ```
 
+<<<<<<< HEAD
 Everytime you want to work with Functional PHP and not reference the fully qualified name, add `use Functional as F;` on top of
 your PHP file.
 
@@ -434,11 +421,12 @@ Returns the lowest element in the array or collection
 `mixed Functional\memoize(callable $callback[, array $arguments = array()], [mixed $key = null]])`  
 Returns and stores the result of the function call. Second call to the same function will return the same result without calling the function again
 
+=======
+## Docs
+[Read the docs](docs/00-index.md)
 
 ## Running the test suite
-To run the test suite with the native implementation use `php -c functional.ini $(which phpunit) tests/`
-
-To run the test suite with the userland implementation use `php -n $(which phpunit) tests/`
+To run the test suite use `vendor/bin/phpunit tests/`
 
 ## Mailing lists
  - General help and development list: http://groups.google.com/group/functional-php
